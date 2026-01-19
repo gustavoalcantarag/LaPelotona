@@ -1,0 +1,37 @@
+name: Ejecutar script LaPelotona
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    env:
+      CRED_TYPE: ${{ secrets.CRED_TYPE }}
+      CRED_PROJECT_ID: ${{ secrets.CRED_PROJECT_ID }}
+      CRED_PRIVATE_KEY_ID: ${{ secrets.CRED_PRIVATE_KEY_ID }}
+      CRED_PRIVATE_KEY: ${{ secrets.CRED_PRIVATE_KEY }}
+      CRED_CLIENT_EMAIL: ${{ secrets.CRED_CLIENT_EMAIL }}
+      CRED_CLIENT_ID: ${{ secrets.CRED_CLIENT_ID }}
+      CRED_AUTH_URI: ${{ secrets.CRED_AUTH_URI }}
+      CRED_TOKEN_URI: ${{ secrets.CRED_TOKEN_URI }}
+      CRED_AUTH_PROVIDER_X509_CERT_URL: ${{ secrets.CRED_AUTH_PROVIDER_X509_CERT_URL }}
+      CRED_CLIENT_X509_CERT_URL: ${{ secrets.CRED_CLIENT_X509_CERT_URL }}
+      CRED_UNIVERSE_DOMAIN: ${{ secrets.CRED_UNIVERSE_DOMAIN }}
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Ejecutar script
+        run: |
+          python script.py

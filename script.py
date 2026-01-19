@@ -1,4 +1,3 @@
-import requests
 from bs4 import BeautifulSoup
 import csv
 import os
@@ -6,9 +5,34 @@ from datetime import datetime
 
 
 now = datetime.now()
+import requests
+from bs4 import BeautifulSoup
+import csv
+import os
+import json
+from datetime import datetime
+
+# Cargar credenciales desde variables de entorno
+def get_credentials_from_env():
+    return {
+        "type": os.environ.get("CRED_TYPE"),
+        "project_id": os.environ.get("CRED_PROJECT_ID"),
+        "private_key_id": os.environ.get("CRED_PRIVATE_KEY_ID"),
+        "private_key": os.environ.get("CRED_PRIVATE_KEY"),
+        "client_email": os.environ.get("CRED_CLIENT_EMAIL"),
+        "client_id": os.environ.get("CRED_CLIENT_ID"),
+        "auth_uri": os.environ.get("CRED_AUTH_URI"),
+        "token_uri": os.environ.get("CRED_TOKEN_URI"),
+        "auth_provider_x509_cert_url": os.environ.get("CRED_AUTH_PROVIDER_X509_CERT_URL"),
+        "client_x509_cert_url": os.environ.get("CRED_CLIENT_X509_CERT_URL"),
+        "universe_domain": os.environ.get("CRED_UNIVERSE_DOMAIN")
+    }
+
+# Si necesitas las credenciales como dict
+credentials = get_credentials_from_env()
+## Si necesitas como json string: json.dumps(credentials)
 fecha_hora = now.strftime("%A, %d %B %Y - %H:%M:%S")
 
-# Siempre eliminar y descargar el HTML más reciente
 try:
     if os.path.exists("pagina.html"):
         os.remove("pagina.html")
@@ -38,6 +62,7 @@ try:
             if current_day and partidos_dia:
                 secciones.append([ [current_day], ["EQUIPOS", "HORA/CANAL"] ] + partidos_dia)
                 partidos_dia = []
+## ...existing code...
             current_day = elem.get_text(strip=True)
         elif elem.name == 'div' and 'partidos-tabla' in elem.get('class', []):
             table = elem.find("table", class_="views-table")
@@ -68,14 +93,15 @@ import gspread
 from google.oauth2.service_account import Credentials
 from gspread_formatting import CellFormat, Color, format_cell_ranges
 
+
 GOOGLE_SHEET_ID = "1WuVGh7PrfnTSXHnL40YG_P48HbavZKSKxCkKtLdN8V4"
 RANGO_HOJA = "A1"  # Comenzar en la celda A1
-NOMBRE_CRED = "credenciales.json"  # Nombre del archivo de credenciales
 
 try:
-    # Autenticación con Google Sheets
+
+    # Autenticación con Google Sheets usando credenciales desde variables de entorno
     scopes = ["https://www.googleapis.com/auth/spreadsheets"]
-    creds = Credentials.from_service_account_file(NOMBRE_CRED, scopes=scopes)
+    creds = Credentials.from_service_account_info(credentials, scopes=scopes)
     gc = gspread.authorize(creds)
     sh = gc.open_by_key(GOOGLE_SHEET_ID)
     worksheet = sh.sheet1  # Usa la primera hoja
