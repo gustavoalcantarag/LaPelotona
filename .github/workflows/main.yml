@@ -27,6 +27,8 @@ jobs:
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
@@ -46,7 +48,9 @@ jobs:
           git config --global user.email "github-actions@github.com"
 
       - name: Commit y push pagina.html
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git add pagina.html
           git commit -m "Actualizar pagina.html automáticamente" || echo "Sin cambios para commitear"
-          git push
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
