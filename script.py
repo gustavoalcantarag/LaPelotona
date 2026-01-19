@@ -4,7 +4,9 @@ import os
 from datetime import datetime
 
 
-now = datetime.now()
+import pytz
+tz = pytz.timezone('America/Lima')
+now = datetime.now(tz)
 import requests
 from bs4 import BeautifulSoup
 import csv
