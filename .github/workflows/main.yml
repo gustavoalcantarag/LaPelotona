@@ -47,6 +47,10 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
+      - name: Pull antes de push
+        run: |
+          git pull --rebase origin main
+
       - name: Commit y push pagina.html
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
