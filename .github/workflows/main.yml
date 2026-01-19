@@ -39,3 +39,14 @@ jobs:
       - name: Ejecutar script
         run: |
           python script.py
+
+      - name: Configurar usuario git
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+      - name: Commit y push pagina.html
+        run: |
+          git add pagina.html
+          git commit -m "Actualizar pagina.html automáticamente" || echo "Sin cambios para commitear"
+          git push
