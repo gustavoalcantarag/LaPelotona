@@ -47,17 +47,17 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
-      - name: Add pagina.html
+      - name: Add y commit pagina.html
         run: |
           git add pagina.html
+          git commit -m "Actualizar pagina.html automáticamente" || echo "Sin cambios para commitear"
 
       - name: Pull antes de push
         run: |
           git pull --rebase origin main
 
-      - name: Commit y push pagina.html
+      - name: Push pagina.html
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git commit -m "Actualizar pagina.html automáticamente" || echo "Sin cambios para commitear"
           git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
