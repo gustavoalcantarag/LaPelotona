@@ -40,9 +40,11 @@ try:
     headers = {"User-Agent": "Mozilla/5.0"}
     response = requests.get(url, headers=headers)
     html = response.text
-    # Guardar el HTML original (opcional, para debug)
+    # Agregar comentario con fecha de descarga para forzar actualización
+    html_con_fecha = f"<!-- Descargado: {fecha_hora} -->\n" + html
+    # Guardar el HTML original
     with open("pagina_original.html", "w", encoding="utf-8") as f:
-        f.write(html)
+        f.write(html_con_fecha)
     print("Descarga y guardado de HTML original completado.")
 except Exception as e:
     print(f"Error descargando HTML: {e}")
