@@ -36,15 +36,14 @@ credentials = get_credentials_from_env()
 fecha_hora = now.strftime("%A, %d %B %Y - %H:%M:%S")
 
 try:
-    if os.path.exists("pagina.html"):
-        os.remove("pagina.html")
     url = "https://www.lapelotona.com/pe/partidos-hoy/"
     headers = {"User-Agent": "Mozilla/5.0"}
     response = requests.get(url, headers=headers)
     html = response.text
-    with open("pagina.html", "w", encoding="utf-8") as f:
+    # Guardar el HTML original (opcional, para debug)
+    with open("pagina_original.html", "w", encoding="utf-8") as f:
         f.write(html)
-    print("Descarga y guardado de HTML completado.")
+    print("Descarga y guardado de HTML original completado.")
 except Exception as e:
     print(f"Error descargando HTML: {e}")
     raise
@@ -167,4 +166,108 @@ try:
     print("Datos subidos a Google Sheets correctamente (formato por secciones, color en títulos y sin color en filas vacías).")
 except Exception as e:
     print(f"Error subiendo a Google Sheets: {e}")
+    raise
+
+# --- Generar HTML limpio con los datos extraídos ---
+try:
+    html_limpio = """<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partidos de Hoy - La Pelotona</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .fecha-actualizacion {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .seccion {
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .titulo-dia {
+            background-color: #4a90d9;
+            color: white;
+            padding: 12px 15px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background-color: #e8f0fe;
+            padding: 10px 15px;
+            text-align: left;
+            font-weight: bold;
+            color: #333;
+        }
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>⚽ Partidos de Hoy</h1>
+"""
+    # Agregar fecha de actualización
+    html_limpio += f'    <p class="fecha-actualizacion">Actualizado: {fecha_hora}</p>\n'
+    
+    # Agregar cada sección (día) con sus partidos
+    for seccion in secciones[1:]:  # Saltar la primera sección que es solo la fecha
+        titulo_dia = seccion[0][0] if seccion[0] else ""
+        html_limpio += f'''    <div class="seccion">
+        <div class="titulo-dia">{titulo_dia}</div>
+        <table>
+            <tr>
+                <th>Equipos</th>
+                <th>Hora / Canal</th>
+            </tr>
+'''
+        for partido in seccion[2:]:  # Saltar título y encabezado
+            equipos = partido[0] if len(partido) > 0 else ""
+            hora_canal = partido[1] if len(partido) > 1 else ""
+            html_limpio += f'''            <tr>
+                <td>{equipos}</td>
+                <td>{hora_canal}</td>
+            </tr>
+'''
+        html_limpio += '''        </table>
+    </div>
+'''
+    
+    html_limpio += """</body>
+</html>"""
+    
+    # Guardar el HTML limpio
+    with open("pagina.html", "w", encoding="utf-8") as f:
+        f.write(html_limpio)
+    
+    print("HTML limpio generado correctamente en pagina.html")
+except Exception as e:
+    print(f"Error generando HTML limpio: {e}")
     raise
