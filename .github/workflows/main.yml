@@ -49,16 +49,16 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
-      - name: Add y commit pagina.html
+      - name: Add y commit archivos HTML
         run: |
-          git add pagina.html
-          git commit -m "Actualizar pagina.html automáticamente" || echo "Sin cambios para commitear"
+          git add pagina_original.html lapelotona.html
+          git commit -m "Actualizar pagina_original.html y lapelotona.html automáticamente" || echo "Sin cambios para commitear"
 
       - name: Pull antes de push
         run: |
           git pull --rebase origin main
 
-      - name: Push pagina.html
+      - name: Push archivos HTML
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

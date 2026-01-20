@@ -264,10 +264,10 @@ try:
 </html>"""
     
     # Guardar el HTML limpio
-    with open("pagina.html", "w", encoding="utf-8") as f:
+    with open("lapelotona.html", "w", encoding="utf-8") as f:
         f.write(html_limpio)
     
-    print("HTML limpio generado correctamente en pagina.html")
+    print("HTML limpio generado correctamente en lapelotona.html")
 except Exception as e:
     print(f"Error generando HTML limpio: {e}")
     raise
