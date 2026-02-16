@@ -68,7 +68,7 @@ jobs:
           token: ${{ secrets.GUSTAVO_REPO_TOKEN }}
           path: gustavoalcantara.com
 
-      - name: Copiar lapelotona.html como todaymatches.html al repo destino
+      - name: Copiar lapelotona.html como todaysmatches.html al repo destino
         run: |
           cp lapelotona.html gustavoalcantara.com/others/TodaysMatches/todaysmatches.html
 
